@@ -3,7 +3,6 @@
 
 using namespace std;
 
-
 void readInput(int& result, int max) {
     if (max < 1)
         return;
