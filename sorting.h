@@ -20,7 +20,9 @@ public:
         // implement merge sort and time
         // implement quick sort and time
         // compare times and print output
-        printData();
     }
     void printData() const;
+    vector<pair<string,int>> testParse(int category, int timeframe, int sort);
+    void quickSort(vector<pair<string,int>>& vec, int low, int high);
+
 };

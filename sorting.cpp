@@ -39,7 +39,7 @@
 
 void Sorting::readWeatherCSV() {
     ifstream file("weather.csv");
-    const int categoryMap[] = {0, 10, 11, 12, 14};
+    const int categoryMap[] = {0, 1,5,10, 11, 12, 14};
     string line;
     getline(file, line); // ignore header
     vector<string> header;
@@ -81,8 +81,45 @@ void Sorting::readWeatherCSV() {
 void Sorting::printData() const {
     for (const auto& row : weatherData) {
         for (const auto& value : row) {
-            cout << value << " ";
+            cout << value.first << " " << value.second << endl;
         }
         cout << endl;
     }
+}
+
+vector<pair<string,int>> Sorting::testParse(int category, int timeframe, int sort) {
+    vector<pair<string,int>> vec;
+    string city = "";
+    for (const auto& row : weatherData) {
+        city = row.at("\"Station.City\"");
+        for (const auto& value : row) {
+            if (value.first.find("Precipitation") != string::npos){
+                vec.push_back(make_pair(city,stoi(value.second)));
+            }
+        }
+    }
+    return vec;
+}
+
+void Sorting::quickSort(vector<pair<string,int>>& vec, int low, int high) { //vector should be a city data point pair
+    if (high <= low) {
+        return;
+    }
+    int pivot = vec[low].second;
+    int up = low + 1;
+    int down = high;
+    while (up <= down) {
+        while (up <= high && vec[up].second <= pivot) {
+            up++;
+        }
+        while (down >= low && vec[down].second > pivot) {
+            down--;
+        }
+        if (up < down) {
+            swap(vec[up], vec[down]);
+        }
+    }
+    swap(vec[low],vec[down]);
+    quickSort(vec,low,down - 1);
+    quickSort(vec,down + 1, high);
 }

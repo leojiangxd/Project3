@@ -1,12 +1,10 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/Project3.dir/main.cpp.obj"
-  "CMakeFiles/Project3.dir/main.cpp.obj.d"
-  "CMakeFiles/Project3.dir/sorting.cpp.obj"
-  "CMakeFiles/Project3.dir/sorting.cpp.obj.d"
-  "Project3.exe"
-  "Project3.exe.manifest"
+  "CMakeFiles/Project3.dir/main.cpp.o"
+  "CMakeFiles/Project3.dir/main.cpp.o.d"
+  "CMakeFiles/Project3.dir/sorting.cpp.o"
+  "CMakeFiles/Project3.dir/sorting.cpp.o.d"
+  "Project3"
   "Project3.pdb"
-  "libProject3.dll.a"
 )
 
 # Per-language clean rules from dependency scanning.

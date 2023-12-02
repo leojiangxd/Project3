@@ -33,7 +33,7 @@ Displaying (category) during (timeframe) in (sort order) order:
 .
 121.	City, State: Value
 
-Algorith times
+Algorithm times
 Algorithm Name: ___ seconds
 Algorithm Name: ___ seconds
 Algorithm Name: ___ seconds
