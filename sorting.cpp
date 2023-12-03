@@ -39,7 +39,7 @@
 
 void Sorting::readWeatherCSV() {
     ifstream file("weather.csv");
-    const int categoryMap[] = {0, 1,5,10, 11, 12, 14};
+    const int categoryMap[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
     string line;
     getline(file, line); // ignore header
     vector<string> header;
@@ -122,4 +122,135 @@ void Sorting::quickSort(vector<pair<string,int>>& vec, int low, int high) { //ve
     swap(vec[low],vec[down]);
     quickSort(vec,low,down - 1);
     quickSort(vec,down + 1, high);
+}
+
+void Sorting::mergeSort(int category, int timeframe, int sort) {
+    dealData();
+    vector<unordered_map<string,string>> tmp = chooseTimeframe(timeframe, weatherData);
+    vector<pair<double, string>> data = chooseCategory(category, tmp);
+    clock_t start, finish;
+    start = clock();
+    mergeSort(data, sort);
+    finish = clock();
+    for (const auto& row : data) {
+        cout << row.second << " " << row.first << endl;
+    }
+    cout << "Time: " << (double)(finish - start) / CLOCKS_PER_SEC << "s" << endl;
+}
+
+vector<unordered_map<string, string>> Sorting::chooseTimeframe(int timeframe, vector<unordered_map<string, string>>& data) {
+    vector<unordered_map<string, string>> result;
+    if (timeframe == 13) {
+        for (const auto& row : data) {
+            if (row.at("\"Date.Year\"") == "2016") {
+                unordered_map<string, string> temp;
+                temp.insert({"\"Data.Precipitation\"", row.at("\"Data.Precipitation\"")});
+                temp.insert({"\"Data.Temperature.Avg Temp\"", row.at("\"Data.Temperature.Avg Temp\"")});
+                temp.insert({"\"Data.Temperature.Max Temp\"", row.at("\"Data.Temperature.Max Temp\"")});
+                temp.insert({"\"Data.Temperature.Min Temp\"", row.at("\"Data.Temperature.Min Temp\"")});
+                temp.insert({"\"Data.Wind.Speed\"", row.at("\"Data.Wind.Speed\"")});
+                temp.insert({"\"Station.City\"", row.at("\"Station.City\"")});
+                result.push_back(temp);
+            }
+        }
+    } else {
+        for (const auto& row : data) {
+            if (row.at("\"Date.Month\"") == to_string(timeframe)) {
+                unordered_map<string, string> temp;
+                temp.insert({"\"Data.Precipitation\"", row.at("\"Data.Precipitation\"")});
+                temp.insert({"\"Data.Temperature.Avg Temp\"", row.at("\"Data.Temperature.Avg Temp\"")});
+                temp.insert({"\"Data.Temperature.Max Temp\"", row.at("\"Data.Temperature.Max Temp\"")});
+                temp.insert({"\"Data.Temperature.Min Temp\"", row.at("\"Data.Temperature.Min Temp\"")});
+                temp.insert({"\"Data.Wind.Speed\"", row.at("\"Data.Wind.Speed\"")});
+                temp.insert({"\"Station.City\"", row.at("\"Station.City\"")});
+                result.push_back(temp);
+            }
+        }
+    }
+
+    return result;
+}
+
+vector<pair<double, string>> Sorting::chooseCategory(int category, vector<unordered_map<string, string>>& data) {
+    vector<pair<double,string>> result;
+    switch (category) {
+        case 1:
+            for (const auto& row : data) {
+                result.emplace_back(stod(row.at("\"Data.Precipitation\"")), row.at("\"Station.City\""));
+            }
+            break;
+        case 2:
+            for (const auto& row : data) {
+                result.emplace_back(stod(row.at("\"Data.Temperature.Avg Temp\"")), row.at("\"Station.City\""));
+            }
+            break;
+        case 3:
+            for (const auto& row : data) {
+                result.emplace_back(stod(row.at("\"Data.Temperature.Max Temp\"")), row.at("\"Station.City\""));
+            }
+            break;
+        case 4:
+            for (const auto& row : data) {
+                result.emplace_back(stod(row.at("\"Data.Temperature.Min Temp\"")), row.at("\"Station.City\""));
+            }
+            break;
+        case 5:
+            for (const auto& row : data) {
+                result.emplace_back(stod(row.at("\"Data.Wind.Speed\"")), row.at("\"Station.City\""));
+            }
+            break;
+    }
+    return result;
+}
+void Sorting::mergeSort(vector<pair<double,string>>& data, int sort) {
+    mergeSort(data, 0, data.size() - 1, sort);
+}
+void Sorting::mergeSort(vector<pair<double,string>> &data, int left, int right, int sort) {
+    if (left >= right) return;
+
+    int mid = left + (right - left) / 2;
+    mergeSort(data, left, mid, sort);
+    mergeSort(data, mid + 1, right, sort);
+    merge(data, left, mid, right, sort);
+}
+void Sorting::merge(vector<pair<double,string>>& data, int left, int mid, int right, int sort) {
+    int i = left, j = mid + 1, k = 0;
+    vector<pair<double,string>> temp(right - left + 1);
+    while (i <= mid && j <= right) {
+        if (sort == 1) {
+            if (data[i].first <= data[j].first) {
+                temp[k++] = data[i++];
+            } else {
+                temp[k++] = data[j++];
+            }
+        } else {
+            if (data[i].first >= data[j].first) {
+                temp[k++] = data[i++];
+            } else {
+                temp[k++] = data[j++];
+            }
+        }
+    }
+    while (i <= mid) {
+        temp[k++] = data[i++];
+    }
+    while (j <= right) {
+        temp[k++] = data[j++];
+    }
+    for (i = left, k = 0; i <= right; i++, k++) {
+        data[i] = temp[k];
+    }
+}
+
+void Sorting::dealData() {
+    for (auto& row : weatherData) {
+        string fullDate = row.at("\"Date.Full\"");
+        string year = "";
+        string month = "";
+        stringstream ss(fullDate);
+        getline(ss, year, '/');
+        getline(ss, month, '/');
+        row.insert({"\"Date.Year\"", year});
+        row.insert({"\"Date.Month\"", month});
+    }
 }

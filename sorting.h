@@ -8,21 +8,25 @@ using namespace std;
 
 class Sorting {
 private:
-//    vector<vector<string>> weatherData;
     vector<unordered_map<string, string>> weatherData;
-
-//    void readWeatherCSV(int category, int timeframe);
+    vector<pair<double, string>> chooseCategory(int category, vector<unordered_map<string, string>>& data);
+    vector<unordered_map<string, string>> chooseTimeframe(int timeframe, vector<unordered_map<string, string>>& data);
     void readWeatherCSV();
+    void dealData();
 public:
     Sorting(int category, int timeframe, int sort) {
-//        readWeatherCSV(category, timeframe);
         readWeatherCSV();
         // implement merge sort and time
         // implement quick sort and time
         // compare times and print output
     }
     void printData() const;
+
     vector<pair<string,int>> testParse(int category, int timeframe, int sort);
     void quickSort(vector<pair<string,int>>& vec, int low, int high);
 
+    void mergeSort(int category, int timeframe, int sort);
+    void mergeSort(vector<pair<double,string>>& data, int left, int right, int sort);
+    void mergeSort(vector<pair<double,string>>& data, int sort);
+    void merge(vector<pair<double,string>>& data, int left, int mid, int right, int sort);
 };

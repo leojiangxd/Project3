@@ -53,11 +53,14 @@ int main() {
             "2.  Sort by descending order\n";
     readInput(sort, 2);
     Sorting test(category, timeframe, sort);
-    auto vec = test.testParse(category, timeframe, sort);
-    test.quickSort(vec,0,vec.size() - 1);
-    cout << vec.size();
-    for (auto e: vec) {
-        cout << e.first << " " << e.second << endl;
-    }
+
+//    auto vec = test.testParse(category, timeframe, sort);
+//    test.quickSort(vec,0,vec.size() - 1);
+//    cout << vec.size();
+//    for (auto e: vec) {
+//        cout << e.first << " " << e.second << endl;
+//    }
+
+    test.mergeSort(category, timeframe, sort);
     return 0;
 }
