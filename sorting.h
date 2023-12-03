@@ -3,30 +3,58 @@
 #include <sstream>
 #include <vector>
 #include <unordered_map>
+#include <iomanip>
+#include <chrono>
 
 using namespace std;
 
 class Sorting {
 private:
+    int category, timeframe, sort;
     vector<unordered_map<string, string>> weatherData;
-    vector<pair<double, string>> chooseCategory(int category, vector<unordered_map<string, string>>& data);
-    vector<unordered_map<string, string>> chooseTimeframe(int timeframe, vector<unordered_map<string, string>>& data);
+    void printData(vector<unordered_map<string, string>>& vec) const;
     void readWeatherCSV();
-    void dealData();
+    void mergeSortAscending(vector<unordered_map<string, string>>& vec, int left, int right);
+    static void mergeAscending(vector<unordered_map<string, string>>& vec, int left, int mid, int right);
+    void mergeSortDescending(vector<unordered_map<string, string>>& vec, int left, int right);
+    static void mergeDescending(vector<unordered_map<string, string>>& vec, int left, int mid, int right);
+    void quickSortAscending(vector<unordered_map<string, string>>& vec, int low, int high);
+    void quickSortDescending(vector<unordered_map<string, string>>& vec, int low, int high);
 public:
     Sorting(int category, int timeframe, int sort) {
+        const int categoryMap[] = {0, 10, 11, 12, 14};
+        this->category = categoryMap[category-1];
+        this->timeframe = timeframe;
+        this->sort = sort;
         readWeatherCSV();
-        // implement merge sort and time
-        // implement quick sort and time
+        vector<unordered_map<string, string>> weatherDataMerge = weatherData;
+        vector<unordered_map<string, string>> weatherDataQuick = weatherData;
+
+        // time mergesort
+        auto start = chrono::high_resolution_clock::now();
+        if (sort == 1) {
+            mergeSortAscending(weatherDataMerge, 0, weatherDataMerge.size() - 1);
+        }
+        else {
+            mergeSortDescending(weatherDataMerge, 0, weatherDataMerge.size() - 1);
+        }
+        auto end = chrono::high_resolution_clock::now();
+        double t_merge = chrono::duration<double, milli>(end-start).count();
+
+        // time quicksort
+        start = chrono::high_resolution_clock::now();
+        if (sort == 1) {
+            quickSortDescending(weatherDataQuick, 0, weatherDataQuick.size() - 1);
+        }
+        else {
+            quickSortAscending(weatherDataQuick, 0, weatherDataQuick.size() - 1);
+        }
+        end = chrono::high_resolution_clock::now();
+        double t_quick = chrono::duration<double, milli>(end-start).count();
+
         // compare times and print output
+        printData(weatherDataMerge);
+        cout << "\nAlgorithm times:\nMerge Sort: " << fixed << t_merge << " ms\nQuick Sort: " << fixed << t_quick << " ms";
     }
-    void printData() const;
-
-    vector<pair<string,int>> testParse(int category, int timeframe, int sort);
-    void quickSort(vector<pair<string,int>>& vec, int low, int high);
-
-    void mergeSort(int category, int timeframe, int sort);
-    void mergeSort(vector<pair<double,string>>& data, int left, int right, int sort);
-    void mergeSort(vector<pair<double,string>>& data, int sort);
-    void merge(vector<pair<double,string>>& data, int left, int mid, int right, int sort);
+    static void readInput(int& result, int max);
 };
