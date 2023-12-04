@@ -22,8 +22,7 @@ private:
     void quickSortDescending(vector<unordered_map<string, string>>& vec, int low, int high);
 public:
     Sorting(int category, int timeframe, int sort) {
-        const int categoryMap[] = {0, 10, 11, 12, 14};
-        this->category = categoryMap[category-1];
+        this->category = category;
         this->timeframe = timeframe;
         this->sort = sort;
         readWeatherCSV();

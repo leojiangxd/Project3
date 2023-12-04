@@ -1,9 +1,11 @@
 #include "sorting.h"
 
 void Sorting::readWeatherCSV() {
+    const int categoryMap[] = {0, 10, 11, 12, 14};
     const string monthMap[] = {"January", "February", "March", "April", "May", "June",
                                "July", "August", "September", "October", "November","December"};
 
+    int categoryCol = categoryMap[category-1];
     ifstream file("weather.csv");
 
     string timeframeString = to_string(timeframe);
@@ -26,7 +28,7 @@ void Sorting::readWeatherCSV() {
         // add only data of chosen category in chosen month of 2016
         if ((timeframeString == "13" || col[2] == timeframeString) && col[4] != "2017") {
             unordered_map<string, string> row;
-            row["Category"] = col[category];
+            row["Category"] = col[categoryCol];
             row["City"] = col[5];
             row["State"] = col[9];
             row["Month"] = monthMap[stoi(col[2])-1];
